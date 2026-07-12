@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keira Chavis — Engineering Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDEEE9;
+    --panel:#F6F6F2;
+    --ink:#1C2430;
+    --line:#C6CCC2;
+    --accent:#E8622C;
+    --accent2:#2F8F76;
+    --accent3:#E8AA3C;
+    --accent4:#3B72C4;
+    --steel:#4C6478;
+    --steel-light:#DCE3E7;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .mono{font-family:'Space Mono',monospace;}
+  .eyebrow{font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.14em;font-size:.7rem;color:var(--steel);font-weight:700;}
+  a{color:var(--steel);}
+  .sheet{max-width:1080px;margin:0 auto;padding:0 28px;position:relative;}
+  .sheet::before,.sheet::after{content:"";position:absolute;top:0;bottom:0;width:1px;background:var(--line);}
+  .sheet::before{left:0;} .sheet::after{right:0;}
+
+  /* ---- NAV: slim, non-overlapping, scalable ---- */
+  nav{position:sticky;top:0;z-index:60;background:var(--paper);border-bottom:1px solid var(--line);}
+  .navwrap{max-width:1080px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:56px;position:relative;}
+  .navwrap .mono{font-size:.75rem;letter-spacing:.08em;cursor:pointer;background:none;border:none;color:var(--ink);}
+  #menu-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid var(--line);color:var(--ink);font-family:'Space Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;padding:7px 12px;border-radius:var(--radius);cursor:pointer;}
+  #menu-toggle:hover{border-color:var(--accent);}
+  #menu-dropdown{
+    position:absolute;top:56px;right:28px;z-index:61;background:var(--panel);border:1px solid var(--ink);
+    min-width:200px;box-shadow:0 8px 20px rgba(0,0,0,.12);display:none;
+  }
+  #menu-dropdown.open{display:block;}
+  #menu-dropdown button{
+    display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--line);
+    font-family:'Space Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;
+    padding:12px 16px;cursor:pointer;color:var(--ink);
+  }
+  #menu-dropdown button:last-child{border-bottom:none;}
+  #menu-dropdown button:hover{background:var(--steel-light);color:var(--accent4);}
+
+  .view{display:none;padding:56px 0 40px;}
+  .view.active{display:block;animation:viewIn .4s ease;}
+  @keyframes viewIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  @media (prefers-reduced-motion: reduce){ .view.active{animation:none;} html{scroll-behavior:auto;} }
+
+  .back-btn{display:inline-flex;align-items:center;gap:6px;margin-bottom:28px;font-family:'Space Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;background:none;border:1px solid var(--line);color:var(--steel);padding:7px 12px;border-radius:var(--radius);cursor:pointer;}
+  .back-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+  h1.name{font-family:'Space Mono',monospace;font-size:clamp(2.6rem,7vw,4.4rem);font-weight:700;margin:10px 0 6px;letter-spacing:-.01em;line-height:1;}
+  .role{font-size:1.15rem;color:var(--steel);font-weight:600;margin:0 0 18px;}
+  .tagline{max-width:620px;color:#3a4350;}
+  .bio-text{max-width:620px;color:#333;margin-top:14px;}
+
+  /* quick links (Home) */
+  .quicklinks{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px;}
+  .quicklink-btn{
+    font-family:'Space Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;
+    padding:11px 18px;border-radius:var(--radius);border:1px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer;
+  }
+  .quicklink-btn.secondary{background:none;color:var(--ink);}
+  .quicklink-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+  /* reusable titleblock component (Home + Contact) */
+  .titleblock{margin-top:44px;border-top:1px solid var(--ink);display:grid;grid-template-columns:repeat(4,1fr);}
+  .titleblock div{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 16px;}
+  .titleblock div:last-child{border-right:none;}
+  .titleblock .tb-label{font-size:.62rem;letter-spacing:.1em;color:var(--steel);text-transform:uppercase;display:block;margin-bottom:4px;font-family:'Space Mono',monospace;}
+  .titleblock .tb-value{font-size:.85rem;font-weight:600;}
+  .titleblock a.tb-value{text-decoration:none;color:var(--ink);}
+  .titleblock a.tb-value:hover{color:var(--accent);}
+
+  /* now card */
+  .now-card{margin-top:40px;border:1px solid var(--ink);background:var(--panel);}
+  .now-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line);}
+  .now-head h2{font-size:1.1rem;margin:0;}
+  .now-carousel{display:flex;align-items:stretch;}
+  .now-nav{background:none;border:none;font-size:1.3rem;color:var(--steel);cursor:pointer;padding:0 14px;}
+  .now-nav:hover{color:var(--accent4);}
+  .now-slide{flex:1;display:flex;gap:16px;padding:18px 8px;}
+  .now-img{width:84px;height:84px;object-fit:cover;border:1px solid var(--line);flex-shrink:0;}
+  .now-date{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--accent);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;}
+  .now-text{font-size:.92rem;color:#2a2f36;margin-bottom:4px;}
+  .now-with{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--steel);}
+  .now-dots{display:flex;gap:6px;justify-content:center;padding-bottom:14px;}
+  .now-dot{width:6px;height:6px;border-radius:50%;background:var(--line);border:none;cursor:pointer;padding:0;}
+  .now-dot.active{background:var(--accent4);}
+
+  .index-grid{margin-top:44px;border-top:1px solid var(--ink);}
+  .index-item{display:flex;align-items:center;gap:20px;padding:20px 4px;border-bottom:1px solid var(--line);cursor:pointer;background:none;border-left:none;border-right:none;border-top:none;width:100%;text-align:left;transition:padding-left .25s ease,background .25s ease;}
+  .index-item:hover{background:var(--panel);padding-left:16px;}
+  .index-num{font-family:'Space Mono',monospace;font-weight:700;font-size:.85rem;min-width:34px;}
+  .index-title{font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;flex:1;}
+  .index-arrow{font-family:'Space Mono',monospace;color:var(--steel);}
+
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:32px;}
+  .sec-num{font-family:'Space Mono',monospace;font-weight:700;font-size:.85rem;}
+  h2{font-family:'Space Mono',monospace;font-size:1.5rem;margin:0;letter-spacing:-.01em;}
+
+  .skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;border:1px solid var(--line);}
+  .skill-group{padding:20px 22px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .skill-group h3{font-family:'Space Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--steel);margin:0 0 12px;}
+  .chip-row{display:flex;flex-wrap:wrap;gap:6px;}
+  .chip{font-family:'Space Mono',monospace;font-size:.68rem;background:var(--panel);border:1px solid var(--line);padding:4px 8px;border-radius:var(--radius);}
+
+  .proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;}
+  .proj-card{position:relative;background:var(--panel);padding:0 0 20px;border:1px solid var(--line);overflow:hidden;cursor:pointer;text-align:left;}
+  .proj-card-inner{padding:20px 22px 0;}
+  .proj-card::before,.proj-card::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none;z-index:2;}
+  .proj-card::before{top:-1px;left:-1px;border-top:2px solid var(--accent);border-left:2px solid var(--accent);}
+  .proj-card::after{bottom:-1px;right:-1px;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent);}
+  .proj-img{width:100%;height:160px;object-fit:cover;display:block;border-bottom:1px solid var(--line);}
+  .proj-badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+  .status-badge{font-family:'Space Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;padding:3px 7px;border-radius:var(--radius);}
+  .status-completed{background:var(--accent2);color:#fff;}
+  .status-progress{background:var(--accent3);color:#1C2430;}
+  .cat-badge{font-family:'Space Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;padding:3px 7px;border-radius:var(--radius);border:1px solid var(--steel);color:var(--steel);}
+  .proj-title{font-size:1.08rem;font-weight:700;margin:2px 0 2px;}
+  .proj-meta{font-family:'Space Mono',monospace;font-size:.66rem;color:var(--steel);margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em;}
+  .proj-desc{font-size:.88rem;color:#333;margin-bottom:12px;}
+  .proj-stat{display:inline-block;font-family:'Space Mono',monospace;font-size:.68rem;background:var(--accent);color:#fff;padding:4px 8px;border-radius:var(--radius);margin-bottom:4px;}
+  .proj-view-more{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--accent4);text-transform:uppercase;letter-spacing:.05em;}
+
+  .detail-hero{width:100%;max-height:340px;object-fit:cover;border:1px solid var(--line);margin-bottom:26px;}
+  .detail-block{margin-bottom:26px;max-width:760px;}
+  .detail-block h4{font-family:'Space Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--steel);margin:0 0 8px;}
+  .detail-block p{margin:0;color:#2a2f36;}
+  .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:8px;}
+  .gallery-item{position:relative;border:1px solid var(--line);}
+  .gallery-item img{width:100%;height:130px;object-fit:cover;display:block;}
+  .gallery-tag{position:absolute;bottom:0;left:0;right:0;background:rgba(28,36,48,.75);color:#fff;font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.05em;padding:3px 6px;}
+  .video-block{margin-top:8px;}
+  .video-block iframe,.video-block video{width:100%;max-width:640px;aspect-ratio:16/9;border:1px solid var(--line);}
+  .video-caption{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--steel);margin-top:4px;}
+
+  .timeline{border-left:2px solid var(--line);padding-left:26px;position:relative;}
+  .tl-item{position:relative;padding-bottom:30px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-item::before{content:"";position:absolute;left:-31px;top:4px;width:8px;height:8px;border-radius:50%;background:var(--dot,var(--accent));}
+  .tl-role{font-weight:700;}
+  .tl-org{color:var(--steel);font-family:'Space Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;}
+  .tl-date{float:right;font-family:'Space Mono',monospace;font-size:.68rem;color:var(--steel);}
+  .tl-item ul{margin:8px 0 0;padding-left:18px;font-size:.88rem;color:#333;}
+  .tl-item li{margin-bottom:4px;}
+
+  .edu-item{border:1px solid var(--line);padding:18px 20px;margin-bottom:14px;background:var(--panel);}
+  .edu-item h3{margin:0 0 2px;font-size:1rem;}
+  .edu-sub{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--steel);text-transform:uppercase;letter-spacing:.05em;}
+
+  .list-item{border:1px solid var(--line);padding:16px 20px;margin-bottom:12px;background:var(--panel);}
+  .list-item h3{margin:0 0 2px;font-size:.98rem;}
+  .list-item .meta{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--steel);text-transform:uppercase;letter-spacing:.05em;}
+  .list-item p{margin:6px 0 0;font-size:.88rem;color:#333;}
+
+  .resume-frame{width:100%;height:80vh;border:1px solid var(--line);margin-top:22px;}
+
+  footer{border-top:2px solid var(--ink);padding:36px 0 50px;max-width:1080px;margin:0 auto;padding-left:28px;padding-right:28px;}
+  .foot-grid{display:flex;flex-wrap:wrap;gap:34px;justify-content:space-between;align-items:flex-end;}
+  .foot-grid a{color:var(--ink);text-decoration:none;font-family:'Space Mono',monospace;font-size:.78rem;}
+  .foot-grid a:hover{color:var(--accent);}
+  .foot-note{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--steel);}
+
+  /* hidden owner-only tools */
+  #tools-fab{position:fixed;bottom:18px;right:18px;z-index:90;display:none;background:var(--ink);color:#fff;border:none;border-radius:50%;width:46px;height:46px;font-size:1.2rem;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);}
+  body.tools-enabled #tools-fab{display:block;}
+  .panel{position:fixed;bottom:0;left:0;right:0;z-index:95;background:var(--ink);color:var(--paper);padding:16px 20px;display:none;max-height:75vh;overflow:auto;}
+  .panel.open{display:block;}
+  .panel .inner{max-width:640px;margin:0 auto;}
+  .panel h4{font-family:'Space Mono',monospace;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;margin:0 0 12px;}
+  .panel p.hint{font-size:.8rem;color:#B9C4CE;margin:0 0 14px;}
+  .panel input[type="file"]{padding:6px 0;color:#fff;font-family:'Inter',sans-serif;font-size:.85rem;}
+  .panel textarea{width:100%;min-height:90px;padding:8px 10px;border-radius:var(--radius);border:1px solid #45505f;background:#232C39;color:#fff;font-family:'Space Mono',monospace;font-size:.7rem;margin-top:10px;}
+  .panel .row-btns{margin-top:14px;display:flex;gap:10px;}
+  .btn{font-family:'Space Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;padding:8px 14px;border-radius:var(--radius);border:1px solid var(--accent4);background:var(--accent4);color:#fff;cursor:pointer;}
+  .btn.ghost{background:none;color:#B9C4CE;border-color:#45505f;}
+  .close-panel{position:absolute;top:12px;right:18px;background:none;border:none;color:#B9C4CE;font-size:1.1rem;cursor:pointer;}
+
+  @media (max-width:640px){ .titleblock{grid-template-columns:repeat(2,1fr);} .tl-date{float:none;display:block;margin-top:4px;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="navwrap">
+    <button class="mono" onclick="showView('view-home')">KC // PORTFOLIO</button>
+    <button id="menu-toggle">☰ Menu</button>
+    <div id="menu-dropdown"></div>
+  </div>
+</nav>
+
+<main id="app"></main>
+
+<footer>
+  <div class="foot-grid">
+    <div><span class="foot-note">© <span id="year"></span> <span id="foot-name"></span></span></div>
+    <a id="foot-phone" href="#"></a>
+    <a id="foot-email" href="#"></a>
+    <a id="foot-linkedin" href="#" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+</footer>
+
+<!-- Owner-only: image helper, revealed only via secret #tools link -->
+<button id="tools-fab" title="Image helper">🖼</button>
+<div class="panel" id="img-helper-panel">
+  <div class="inner">
+    <button class="close-panel" id="close-img-helper">✕</button>
+    <h4>Image → code helper</h4>
+    <p class="hint">Pick a photo. It'll be resized and turned into a text string — paste that into any image field in your data block (heroImage, a gallery entry's src, etc).</p>
+    <input type="file" id="img-helper-input" accept="image/*">
+    <textarea id="img-helper-output" readonly placeholder="Your pasteable image string will appear here..."></textarea>
+    <div class="row-btns">
+      <button class="btn" id="img-helper-copy">Copy to clipboard</button>
+      <button class="btn ghost" id="close-img-helper-2">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   ============  SECTION 1 — YOUR CONTENT (EDIT HERE)  ============
+   ================================================================
+   Copy an entry in any list, fill in your own info, done. Leave a
+   field "" or [] and it's automatically hidden — no other section
+   needs to change.
+   ================================================================ */
+
+const SITE = {
+
+  profile: {
+    name: "Keira Chavis",
+    title: "Mechanical Engineering Technology Student",
+    tagline: "I build things that need to fit, move, and hold up — from 3D-printed replacement parts to Arduino-driven robotics.",
+    bio: "", // a longer paragraph, shown under the tagline on Home — leave "" to hide
+    phone: "281-836-1811",
+    email: "chaviskeira@gmail.com",
+    linkedin: "https://www.linkedin.com/in/keira-chavis",
+    location: "Houston, TX"
+  },
+
+  // Resume — set fileUrl once you've uploaded a PDF next to this file in
+  // your repo (e.g. "resume.pdf"). Leave "" to hide the Resume section entirely.
+  resume: {
+    fileUrl: "",
+    label: "Download Resume"
+  },
+
+  // "What I'm doing now" — newest entry goes at the BOTTOM. Whole card is
+  // hidden automatically when this list is empty.
+  now: [
+    // { activity:"", with:"", date:"", image:"" },
+  ],
+
+  // Projects — the primary section. Copy the commented template below to add one.
+  projects: [
+    {
+      id: "gear-holder",
+      title: "3D-Printed Gear Holder",
+      category: "CAD & Manufacturing",
+      date: "2024",
+      status: "Completed",
+      shortDescription: "Custom gear-mounting component designed to replace a commercially sourced part.",
+      technologies: ["SolidWorks", "3D Printing"],
+      heroImage: "",
+      gallery: [
+        // { src:"", caption:"", type:"cad" }  // type: cad | before | after | prototype | manufacturing | final
+      ],
+      videos: [
+        // { url:"", caption:"" }
+      ],
+      problem: "The machinery relied on a commercially sourced gear-mounting part that added cost and lead time whenever it needed replacing.",
+      solution: "Designed a custom gear mount tailored to the exact application and produced it in-house via 3D printing.",
+      process: "Built the CAD model in SolidWorks, iterated on wall thickness and tolerances, then produced functional prototypes to check fit-up.",
+      challenges: "Getting the printed tolerances to hold up to the fit-up accuracy the application required.",
+      lessonsLearned: "",
+      outcome: "Achieved roughly $50 in cost savings per unit compared to the sourced part, while improving equipment reliability.",
+      stat: "~$50 saved / unit"
+    },
+    {
+      id: "lsamp-robotics",
+      title: "LSAMP Scholar Research — Robotics",
+      category: "Robotics",
+      date: "Summer 2024",
+      status: "Completed",
+      shortDescription: "Designed, assembled, and programmed robotic systems as an LSAMP Scholar research intern.",
+      technologies: ["Arduino", "Embedded Systems", "Sensors & Actuators"],
+      heroImage: "",
+      gallery: [],
+      videos: [],
+      problem: "",
+      solution: "",
+      process: "Designed, assembled, and programmed robotic systems using Arduino-based controllers and embedded hardware, integrating sensors and actuators to perform autonomous tasks.",
+      challenges: "",
+      lessonsLearned: "Presenting the technical demonstrations to students and faculty pushed me to explain engineering decisions clearly to a non-specialist audience.",
+      outcome: "Presented technical demonstrations to students and faculty, supporting STEM outreach initiatives.",
+      stat: ""
+    },
+    {
+      id: "nasa-lspace",
+      title: "NASA L'SPACE Mission Concept Academy",
+      category: "Systems Engineering",
+      date: "Fall 2025",
+      status: "Completed",
+      shortDescription: "Collaborated with a multidisciplinary team to develop a NASA mission concept.",
+      technologies: ["Systems Engineering", "Technical Documentation"],
+      heroImage: "",
+      gallery: [],
+      videos: [],
+      problem: "",
+      solution: "",
+      process: "Applied structured project management and systems engineering principles across design reviews and mission planning deliverables.",
+      challenges: "",
+      lessonsLearned: "",
+      outcome: "Contributed technical documentation and design-review input across a full mission-concept lifecycle.",
+      stat: ""
+    }
+
+    // ---- TEMPLATE: copy/paste this block to add a new project ----
+    // ,{
+    //   id: "unique-id-here", title: "", category: "", date: "", status: "In Progress",
+    //   shortDescription: "", technologies: [], heroImage: "", gallery: [], videos: [],
+    //   problem: "", solution: "", process: "", challenges: "", lessonsLearned: "",
+    //   outcome: "", stat: ""
+    // }
+  ],
+
+  // Skills — add a word to items[] for a new skill, or a whole new
+  // {category, items} object for a new column.
+  skills: [
+    { category: "Languages", items: ["Python", "C++", "G-Code"] },
+    { category: "Automation & Controls", items: ["Arduino", "PLC (Allen-Bradley CCW)", "RoboDK"] },
+    { category: "CAD & Manufacturing", items: ["SolidWorks (CSWA)", "Fusion 360", "Siemens NX", "3D Printing", "CNC Milling", "CNC Turning"] },
+    { category: "Engineering", items: ["Mechanical Design", "Mechanical Assembly", "Technical Documentation", "Root Cause Analysis", "Risk Management", "Troubleshooting"] }
+  ],
+
+  // Experience — jobs & internships, chronological.
+  experience: [
+    {
+      role: "Trainer", org: "Starbucks", location: "Houston, TX", date: "Jul 2021 – Present",
+      bullets: [
+        "Trained new employees on equipment operation, workplace safety, and standardized procedures.",
+        "Troubleshot espresso machines and POS equipment to minimize operational downtime.",
+        "Coordinated inventory and maintained efficient workflow during high-volume operations."
+      ]
+    },
+    {
+      role: "Mechanic Apprentice", org: "Bartuning", location: "Houston, TX", date: "Mar 2022 – Sep 2022",
+      bullets: [
+        "Assisted with inspection, diagnosis, and repair of automotive mechanical systems.",
+        "Used hand and power tools to perform maintenance, following shop safety standards.",
+        "Supported troubleshooting through systematic inspection and testing alongside senior technicians."
+      ]
+    }
+  ],
+
+  // Leadership — organizations & roles, kept separate from Experience.
+  leadership: [
+    {
+      role: "President", org: "SHPE (Society of Hispanic Professional Engineers)", location: "Houston, TX", date: "Jul 2024 – Jul 2025",
+      bullets: [
+        "Led chapter operations: workshops, networking events, and professional development programs.",
+        "Coordinated student volunteers, faculty, and industry professionals on chapter initiatives.",
+        "Managed event logistics and strengthened organizational leadership through project planning."
+      ]
+    }
+  ],
+
+  volunteer: [
+    // { role:"", org:"", location:"", date:"", bullets:[] }
+  ],
+
+  education: [
+    { degree: "B.S., Mechanical Engineering Technology", school: "University of Houston, Cullen College of Engineering", date: "Aug 2024 – Present" },
+    { degree: "Associate of Applied Science", school: "San Jacinto Community College", date: "May 2025" }
+  ],
+
+  certifications: [
+    { name: "Certified SOLIDWORKS Associate (CSWA)", issuer: "", date: "" }
+  ],
+
+  awards: [],       // { name:"", issuer:"", date:"" }
+  publications: [], // { title:"", venue:"", date:"", url:"" }
+  blog: []          // { title:"", date:"", summary:"", url:"" }
+};
+
+/* ================================================================
+   ========  SECTION 2 — RENDER ENGINE (no need to edit)  ==========
+   ================================================================ */
+
+const els = { app: document.getElementById('app') };
+const accentCycle = ['var(--accent)','var(--accent2)','var(--accent3)','var(--accent4)'];
+
+function esc(str){ const d = document.createElement('div'); d.textContent = str ?? ''; return d.innerHTML; }
+
+function timelineHTML(list, colorVar){
+  return `<div class="timeline">` + list.map(item => `
+    <div class="tl-item" style="--dot:${colorVar}">
+      <span class="tl-date mono">${esc(item.date)}</span>
+      <div class="tl-role">${esc(item.role)}</div>
+      <div class="tl-org">${esc(item.org)}${item.location ? ' — ' + esc(item.location) : ''}</div>
+      ${item.bullets && item.bullets.length ? `<ul>${item.bullets.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>` : ''}
+    </div>`).join('') + `</div>`;
+}
+
+function listSectionHTML(list, fields){
+  return list.map(item => `
+    <div class="list-item">
+      <h3>${esc(item[fields.title])}</h3>
+      ${fields.meta ? `<div class="meta">${fields.meta.map(f=>item[f]).filter(Boolean).map(esc).join(' — ')}</div>` : ''}
+      ${fields.desc && item[fields.desc] ? `<p>${esc(item[fields.desc])}</p>` : ''}
+      ${fields.url && item[fields.url] ? `<p><a href="${esc(item[fields.url])}" target="_blank" rel="noopener">View →</a></p>` : ''}
+    </div>`).join('');
+}
+
+function renderProjects(){
+  return `<div class="proj-grid">` + SITE.projects.map(p => `
+    <button class="proj-card" onclick="showProjectDetail('${p.id}')">
+      ${p.heroImage ? `<img class="proj-img" src="${p.heroImage}" alt="${esc(p.title)}">` : ''}
+      <div class="proj-card-inner">
+        <div class="proj-badge-row">
+          ${p.status ? `<span class="status-badge ${p.status==='Completed'?'status-completed':'status-progress'}">${esc(p.status)}</span>` : ''}
+          ${p.category ? `<span class="cat-badge">${esc(p.category)}</span>` : ''}
+        </div>
+        <div class="proj-title">${esc(p.title)}</div>
+        ${p.date ? `<div class="proj-meta">${esc(p.date)}</div>` : ''}
+        ${p.shortDescription ? `<div class="proj-desc">${esc(p.shortDescription)}</div>` : ''}
+        ${p.technologies && p.technologies.length ? `<div class="chip-row" style="margin-bottom:10px;">${p.technologies.map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div>` : ''}
+        ${p.stat ? `<span class="proj-stat">${esc(p.stat)}</span><br>` : ''}
+        <span class="proj-view-more">View details →</span>
+      </div>
+    </button>`).join('') + `</div>`;
+}
+
+function galleryHTML(gallery){
+  if(!gallery || !gallery.length) return '';
+  return `<div class="detail-block"><h4>Gallery</h4><div class="gallery-grid">` +
+    gallery.map(g => `<div class="gallery-item"><img src="${g.src}" alt="${esc(g.caption||'')}">${g.type?`<span class="gallery-tag">${esc(g.type)}</span>`:''}</div>`).join('') +
+  `</div></div>`;
+}
+
+function videosHTML(videos){
+  if(!videos || !videos.length) return '';
+  return `<div class="detail-block"><h4>Videos</h4>` + videos.map(v => {
+    const isEmbed = /youtube\.com|youtu\.be|vimeo\.com/.test(v.url||'');
+    const media = isEmbed ? `<iframe src="${v.url}" frameborder="0" allowfullscreen></iframe>` : `<video src="${v.url}" controls></video>`;
+    return `<div class="video-block">${media}${v.caption?`<div class="video-caption">${esc(v.caption)}</div>`:''}</div>`;
+  }).join('') + `</div>`;
+}
+
+function textBlock(label, value){
+  if(!value) return '';
+  return `<div class="detail-block"><h4>${label}</h4><p>${esc(value)}</p></div>`;
+}
+
+function renderProjectDetail(p){
+  return `
+    <button class="back-btn" onclick="showView('view-projects')">← All projects</button>
+    <div class="proj-badge-row">
+      ${p.status ? `<span class="status-badge ${p.status==='Completed'?'status-completed':'status-progress'}">${esc(p.status)}</span>` : ''}
+      ${p.category ? `<span class="cat-badge">${esc(p.category)}</span>` : ''}
+    </div>
+    <h2 style="font-size:1.8rem;margin:6px 0 4px;">${esc(p.title)}</h2>
+    ${p.date ? `<div class="proj-meta" style="margin-bottom:20px;">${esc(p.date)}</div>` : ''}
+    ${p.heroImage ? `<img class="detail-hero" src="${p.heroImage}" alt="${esc(p.title)}">` : ''}
+    ${p.technologies && p.technologies.length ? `<div class="chip-row" style="margin-bottom:26px;">${p.technologies.map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div>` : ''}
+    ${textBlock('Problem', p.problem)}
+    ${textBlock('Solution', p.solution)}
+    ${textBlock('Design process', p.process)}
+    ${textBlock('Challenges', p.challenges)}
+    ${textBlock('Lessons learned', p.lessonsLearned)}
+    ${textBlock('Outcome', p.outcome)}
+    ${galleryHTML(p.gallery)}
+    ${videosHTML(p.videos)}
+  `;
+}
+
+function showProjectDetail(id){
+  const p = SITE.projects.find(pr => pr.id === id);
+  if(!p) return;
+  document.getElementById('view-project-detail').innerHTML = `<div class="sheet">${renderProjectDetail(p)}</div>`;
+  showView('view-project-detail');
+}
+window.showProjectDetail = showProjectDetail;
+
+function renderSkills(){
+  return `<div class="skills-grid">` + SITE.skills.map(g => `
+    <div class="skill-group">
+      <h3>${esc(g.category)}</h3>
+      <div class="chip-row">${g.items.map(i=>`<span class="chip">${esc(i)}</span>`).join('')}</div>
+    </div>`).join('') + `</div>`;
+}
+
+function renderEducation(){
+  return SITE.education.map(e => `
+    <div class="edu-item">
+      <h3>${esc(e.degree)}</h3>
+      <span class="edu-sub">${esc(e.school)}${e.date?' — '+esc(e.date):''}</span>
+    </div>`).join('');
+}
+
+function renderResume(){
+  const r = SITE.resume;
+  const isPdf = /\.pdf($|\?)/i.test(r.fileUrl||'');
+  return `
+    <a class="quicklink-btn" href="${r.fileUrl}" download>${esc(r.label || 'Download Resume')}</a>
+    ${isPdf ? `<iframe class="resume-frame" src="${r.fileUrl}"></iframe>` : ''}
+  `;
+}
+
+function renderTitleblock(){
+  return `<div class="titleblock">
+    <div><span class="tb-label">I Am</span><span class="tb-value">${esc(SITE.profile.name)}</span></div>
+    ${SITE.profile.phone?`<div><span class="tb-label">Phone</span><a class="tb-value" href="tel:${SITE.profile.phone.replace(/[^0-9+]/g,'')}">${esc(SITE.profile.phone)}</a></div>`:''}
+    ${SITE.profile.email?`<div><span class="tb-label">Email</span><a class="tb-value" href="mailto:${SITE.profile.email}">${esc(SITE.profile.email)}</a></div>`:''}
+    ${SITE.profile.linkedin?`<div><span class="tb-label">LinkedIn</span><a class="tb-value" href="${SITE.profile.linkedin}" target="_blank" rel="noopener">${esc(SITE.profile.linkedin.replace('https://www.linkedin.com',''))}</a></div>`:''}
+  </div>`;
+}
+
+// ---- now slideshow ----
+let nowIndex = 0;
+function renderNowCard(){
+  const list = SITE.now;
+  if(!list.length) return '';
+  const order = list.slice().reverse();
+  if(nowIndex >= order.length) nowIndex = 0;
+  const n = order[nowIndex];
+  const dots = order.map((_,i) => `<button class="now-dot ${i===nowIndex?'active':''}" onclick="jumpNow(${i})"></button>`).join('');
+  return `
+    <div class="now-card">
+      <div class="now-head"><h2 class="mono">What I'm doing now</h2></div>
+      <div class="now-carousel">
+        ${order.length>1?`<button class="now-nav" onclick="stepNow(-1)">‹</button>`:''}
+        <div class="now-slide">
+          ${n.image?`<img class="now-img" src="${n.image}" alt="update photo">`:''}
+          <div>
+            ${n.date?`<div class="now-date">${esc(n.date)}</div>`:''}
+            <div class="now-text">${esc(n.activity)}</div>
+            ${n.with?`<div class="now-with">with ${esc(n.with)}</div>`:''}
+          </div>
+        </div>
+        ${order.length>1?`<button class="now-nav" onclick="stepNow(1)">›</button>`:''}
+      </div>
+      ${order.length>1?`<div class="now-dots">${dots}</div>`:''}
+    </div>`;
+}
+function stepNow(dir){
+  const len = SITE.now.length;
+  nowIndex = (nowIndex + dir + len) % len;
+  document.querySelector('#now-slot').innerHTML = renderNowCard();
+}
+function jumpNow(i){ nowIndex = i; document.querySelector('#now-slot').innerHTML = renderNowCard(); }
+window.stepNow = stepNow; window.jumpNow = jumpNow;
+
+// ---- section registry — Projects first, per recruiter-priority order ----
+const sectionsConfig = [
+  { key:'projects', label:'Projects', render: renderProjects, hasContent:()=>SITE.projects.length>0 },
+  { key:'experience', label:'Experience', render:()=>timelineHTML(SITE.experience,'var(--accent)'), hasContent:()=>SITE.experience.length>0 },
+  { key:'leadership', label:'Leadership', render:()=>timelineHTML(SITE.leadership,'var(--accent2)'), hasContent:()=>SITE.leadership.length>0 },
+  { key:'volunteer', label:'Volunteer', render:()=>timelineHTML(SITE.volunteer,'var(--accent3)'), hasContent:()=>SITE.volunteer.length>0 },
+  { key:'certifications', label:'Certifications', render:()=>listSectionHTML(SITE.certifications, {title:'name', meta:['issuer','date']}), hasContent:()=>SITE.certifications.length>0 },
+  { key:'skills', label:'Skills', render: renderSkills, hasContent:()=>SITE.skills.length>0 },
+  { key:'education', label:'Education', render: renderEducation, hasContent:()=>SITE.education.length>0 },
+  { key:'awards', label:'Awards', render:()=>listSectionHTML(SITE.awards, {title:'name', meta:['issuer','date']}), hasContent:()=>SITE.awards.length>0 },
+  { key:'publications', label:'Publications', render:()=>listSectionHTML(SITE.publications, {title:'title', meta:['venue','date'], url:'url'}), hasContent:()=>SITE.publications.length>0 },
+  { key:'blog', label:'Blog', render:()=>listSectionHTML(SITE.blog, {title:'title', meta:['date'], desc:'summary', url:'url'}), hasContent:()=>SITE.blog.length>0 },
+  { key:'resume', label:'Resume', render: renderResume, hasContent:()=>!!SITE.resume.fileUrl },
+  { key:'contact', label:'Contact', render:()=>renderTitleblock(), hasContent:()=>true }
+];
+
+function buildMenu(active){
+  const dropdown = document.getElementById('menu-dropdown');
+  dropdown.innerHTML = `<button onclick="closeMenuAnd('view-home')">Home</button>` +
+    active.map(s => `<button onclick="closeMenuAnd('view-${s.key}')">${s.label}</button>`).join('');
+}
+function closeMenuAnd(viewId){
+  document.getElementById('menu-dropdown').classList.remove('open');
+  showView(viewId);
+}
+window.closeMenuAnd = closeMenuAnd;
+
+function buildHomeIndex(active){
+  // Projects/Resume/Contact already have prominent quick-link buttons — no need to repeat them here.
+  const rest = active.filter(s => !['projects','resume','contact'].includes(s.key));
+  return rest.map((s,i) => `
+    <button class="index-item" onclick="showView('view-${s.key}')">
+      <span class="index-num mono" style="color:${accentCycle[i % accentCycle.length]}">${String(i+1).padStart(2,'0')}</span>
+      <span class="index-title">${s.label}</span>
+      <span class="index-arrow">→</span>
+    </button>`).join('');
+}
+
+function buildApp(){
+  const active = sectionsConfig.filter(s => s.hasContent());
+
+  const homeView = `
+    <div class="view active" id="view-home">
+      <div class="sheet">
+        <span class="eyebrow">${esc(SITE.profile.title)} — ${esc(SITE.profile.location)}</span>
+        <h1 class="name">${esc(SITE.profile.name).toUpperCase()}</h1>
+        <p class="role">${esc(SITE.profile.title)}</p>
+        <p class="tagline">${esc(SITE.profile.tagline)}</p>
+        ${SITE.profile.bio ? `<p class="bio-text">${esc(SITE.profile.bio)}</p>` : ''}
+        <div class="quicklinks">
+          ${SITE.projects.length ? `<button class="quicklink-btn" onclick="showView('view-projects')">View Projects</button>` : ''}
+          ${SITE.resume.fileUrl ? `<a class="quicklink-btn secondary" href="${SITE.resume.fileUrl}" download>${esc(SITE.resume.label||'Resume')}</a>` : ''}
+          <button class="quicklink-btn secondary" onclick="showView('view-contact')">Contact</button>
+        </div>
+        <div id="now-slot">${renderNowCard()}</div>
+        <div class="index-grid">${buildHomeIndex(active)}</div>
+      </div>
+    </div>`;
+
+  const sectionViews = active.map((s, idx) => `
+    <div class="view" id="view-${s.key}">
+      <div class="sheet">
+        <button class="back-btn" onclick="showView('view-home')">← Home</button>
+        <div class="sec-head"><span class="sec-num" style="color:${accentCycle[idx % accentCycle.length]}">${String(idx+1).padStart(2,'0')}</span><h2>${s.label}</h2></div>
+        ${s.render()}
+      </div>
+    </div>`).join('');
+
+  const detailView = `<div class="view" id="view-project-detail"></div>`;
+
+  els.app.innerHTML = homeView + sectionViews + detailView;
+  buildMenu(active);
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+  document.getElementById('foot-name').textContent = SITE.profile.name;
+  if(SITE.profile.phone){ const a=document.getElementById('foot-phone'); a.href='tel:'+SITE.profile.phone.replace(/[^0-9+]/g,''); a.textContent=SITE.profile.phone; }
+  if(SITE.profile.email){ const a=document.getElementById('foot-email'); a.href='mailto:'+SITE.profile.email; a.textContent=SITE.profile.email; }
+  if(SITE.profile.linkedin){ document.getElementById('foot-linkedin').href = SITE.profile.linkedin; }
+}
+
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const el = document.getElementById(id);
+  if(!el) return;
+  void el.offsetWidth;
+  el.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+window.showView = showView;
+
+document.getElementById('menu-toggle').onclick = () => {
+  document.getElementById('menu-dropdown').classList.toggle('open');
+};
+document.addEventListener('click', (e) => {
+  const dd = document.getElementById('menu-dropdown');
+  const toggle = document.getElementById('menu-toggle');
+  if(dd.classList.contains('open') && !dd.contains(e.target) && e.target !== toggle){
+    dd.classList.remove('open');
+  }
+});
+
+// ---- owner-only image helper, revealed only via secret #tools link ----
+function checkToolsAccess(){
+  if(location.hash === '#tools'){ document.body.classList.add('tools-enabled'); }
+}
+checkToolsAccess();
+window.addEventListener('hashchange', checkToolsAccess);
+
+function resizeImage(file, maxW){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxW / img.width);
+        const w = Math.round(img.width*scale), h = Math.round(img.height*scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+const imgPanel = document.getElementById('img-helper-panel');
+document.getElementById('tools-fab').onclick = () => imgPanel.classList.add('open');
+document.getElementById('close-img-helper').onclick = () => imgPanel.classList.remove('open');
+document.getElementById('close-img-helper-2').onclick = () => imgPanel.classList.remove('open');
+document.getElementById('img-helper-input').onchange = async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const dataUrl = await resizeImage(file, 900);
+  document.getElementById('img-helper-output').value = dataUrl;
+};
+document.getElementById('img-helper-copy').onclick = () => {
+  const box = document.getElementById('img-helper-output');
+  box.select();
+  navigator.clipboard.writeText(box.value).catch(()=>document.execCommand('copy'));
+};
+
+buildApp();
+</script>
+</body>
+</html>
